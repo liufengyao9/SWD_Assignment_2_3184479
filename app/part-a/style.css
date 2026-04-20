@@ -1,0 +1,75 @@
+.form {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+}
+
+.input-group {
+    display: flex;
+    margin-bottom: 15px;
+}
+
+input[type="text"],
+input[type="tel"] {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 16px;
+    outline: none;
+}
+
+.btn {
+    background: #eee;
+    border: 1px solid #ddd;
+    border-left: none;
+    padding: 0 12px;
+    cursor: pointer;
+    border-radius: 0 6px 6px 0;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+    margin: -10px 0 15px 0;
+    border: 1px solid #ddd;
+    border-top: none;
+    background: white;
+    max-height: 150px;
+    overflow-y: auto;
+    border-radius: 0 0 6px 6px;
+}
+
+ul li button {
+    width: 100%;
+    padding: 8px 12px;
+    text-align: left;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+ul li button:hover {
+    background-color: #f0f0f0;
+}
+
+button[type="submit"] {
+    width: 100%;
+    padding: 12px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+button[type="submit"]:hover {
+    background-color: #0056b3;
+}
