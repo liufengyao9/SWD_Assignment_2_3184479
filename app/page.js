@@ -12,13 +12,13 @@ export default function Home() {
           <Link href="/part-b-c/add">
             <h2>Add Appliance</h2>
           </Link>
-          <Link href="/search">
+          <Link href="/part-b-c/search">
             <h2>Search Appliance</h2>
           </Link>
-          <Link href="/update">
+          <Link href="/part-b-c/update">
             <h2>Update Appliance</h2>
           </Link>
-          <Link href="/delete">
+          <Link href="/part-b-c/delete">
             <h2>Delete Appliance</h2>
           </Link>
         </div>

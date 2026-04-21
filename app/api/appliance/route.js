@@ -150,7 +150,7 @@ export async function POST(request) {
     }
 }
 
-//GET: Search appliance by serial number
+// GET
 export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const serial = searchParams.get('serial');
