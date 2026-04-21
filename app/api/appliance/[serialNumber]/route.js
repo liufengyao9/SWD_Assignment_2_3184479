@@ -68,7 +68,7 @@ function validateUpdate(u, a) {
 // Serial number, UserID, ApplianceID cannot be change.
 export async function PUT(request, { params }) {
 
-    const { serialNumber } = params;
+    const { serialNumber } = await params;
     const body = await request.json();
 
     const userData = {

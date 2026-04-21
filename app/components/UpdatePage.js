@@ -80,7 +80,7 @@ export default function UpdatePage() {
 
         const res = await fetch(`/api/appliance/${searchSerial}`, {
             method: 'PUT',
-            headers: { 'Content-Type:': 'appliance/json' },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(updatedData)
         })
 
@@ -135,28 +135,28 @@ export default function UpdatePage() {
                             <input type="text" value={firstName} onChange={e => setFirstName(e.target.value)} />
                             {errors.FirstName && <span >{errors.FirstName}</span>}
                         </div>
-                        <div className="field">
-                            <label>Last Name *</label>
+                        <div >
+                            <label>Last Name</label>
                             <input type="text" value={lastName} onChange={e => setLastName(e.target.value)} />
                             {errors.LastName && <span >{errors.LastName}</span>}
                         </div>
-                        <div className="field" style={{ gridColumn: '1 / -1' }}>
-                            <label>Address *</label>
+                        <div style={{ gridColumn: '1 / -1' }}>
+                            <label>Address</label>
                             <input type="text" value={address} onChange={e => setAddress(e.target.value)} />
                             {errors.Address && <span>{errors.Address}</span>}
                         </div>
-                        <div className="field">
-                            <label>Mobile *</label>
+                        <div >
+                            <label>Mobile</label>
                             <input type="tel" value={mobile} onChange={e => setMobile(e.target.value)} />
                             {errors.Mobile && <span >{errors.Mobile}</span>}
                         </div>
-                        <div className="field">
-                            <label>Email *</label>
+                        <div >
+                            <label>Email</label>
                             <input type="email" value={email} onChange={e => setEmail(e.target.value)} />
                             {errors.Email && <span >{errors.Email}</span>}
                         </div>
-                        <div className="field">
-                            <label>Eircode *</label>
+                        <div>
+                            <label>Eircode</label>
                             <input type="text" value={eircode} onChange={e => setEircode(e.target.value.toUpperCase())} />
                             {errors.Eircode && <span >{errors.Eircode}</span>}
                         </div>
