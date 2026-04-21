@@ -54,19 +54,19 @@ export default function DeletePage() {
             {/*Enter serial number*/}
             {!appliance && !message && (
                 <form onSubmit={handleSubmit}>
+
                     <div>
-                        <div>
-                            <label>Serial Number (12 digits)</label>
-                            <input
-                                id="serial"
-                                type="text"
-                                placeholder="e.g. 123456789012"
-                                value={serialNumber}
-                                onChange={e => setSerialNumber(e.target.value)}
-                            />
-                            {serialError && <span>{serialError}</span>}
-                        </div>
+                        <label>Serial Number (12 digits)</label>
+                        <input
+                            id="serial"
+                            type="text"
+                            placeholder="e.g. 123456789012"
+                            value={serialNumber}
+                            onChange={e => setSerialNumber(e.target.value)}
+                        />
+                        {serialError && <span>{serialError}</span>}
                     </div>
+
                     <div>
                         <button type="submit">
                             Find Appliance
