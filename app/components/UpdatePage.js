@@ -43,25 +43,28 @@ export default function UpdatePage() {
 
         const res = await fetch(`/api/appliance?serial=${searchSerial}`);
         const data = await res.json();
+        console.log(data);
 
         if (!data.success) {
             setSearchError(data.message || 'No matching appliance found!');
             return;
         }
 
+        const appliance = data.data[0];
+
         // Fill with existing data
-        setFirstName(data.data.FirstName);
-        setLastName(data.data.LastName);
-        setAddress(data.data.Address);
-        setMobile(data.data.Mobile);
-        setEmail(data.data.Email);
-        setEircode(data.data.Eircode);
-        setApplianceType(data.data.ApplianceType);
-        setBrand(data.data.Brand);
-        setModelNumber(data.data.ModelNumber);
-        setPurchaseDate(data.data.PurchaseDate?.slice(0, 10));
-        setWarrantyDate(data.data.WarrantyExpirationDate?.slice(0, 10));
-        setCost(parseFloat(data.data.Cost).toFixed(2));
+        setFirstName(appliance.FirstName);
+        setLastName(appliance.LastName);
+        setAddress(appliance.Address);
+        setMobile(appliance.Mobile);
+        setEmail(appliance.Email);
+        setEircode(appliance.Eircode);
+        setApplianceType(appliance.ApplianceType);
+        setBrand(appliance.Brand);
+        setModelNumber(appliance.ModelNumber);
+        setPurchaseDate(appliance.PurchaseDate?.slice(0, 10));
+        setWarrantyDate(appliance.WarrantyExpirationDate?.slice(0, 10));
+        setCost(parseFloat(appliance.Cost).toFixed(2));
         setFound(true);
     }
 
