@@ -92,7 +92,7 @@ export default function SearchPage() {
                             <tr><th>Serial Number</th><td>{result.SerialNumber}</td></tr>
                             <tr><th>Purchase Date</th><td>{result.PurchaseDate?.slice(0, 10)}</td></tr>
                             <tr><th>Warranty Expiry</th><td>{result.WarrantyExpirationDate?.slice(0, 10)}</td></tr>
-                            <tr><th>Cost</th><td>€{parseFloat(result.Cost).toFixed(2)}</td></tr>
+                            <tr><th>Cost</th><td>{result?.Cost ? `EUR ${parseFloat(result.Cost).toFixed(2)}` : 'N/A'}</td></tr>
                         </tbody>
                     </table>
 

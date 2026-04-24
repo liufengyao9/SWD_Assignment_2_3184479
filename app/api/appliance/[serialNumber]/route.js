@@ -67,35 +67,36 @@ function validateUpdate(u, a) {
 // PUT: Update user details and appliance by serial number, 
 // Serial number, UserID, ApplianceID cannot be change.
 export async function PUT(request, { params }) {
-
-    const { serialNumber } = await params;
-    const body = await request.json();
-
-    const userData = {
-        FirstName: sanitize(body.FirstName),
-        LastName: sanitize(body.LastName),
-        Address: sanitize(body.Address),
-        Mobile: sanitize(body.Mobile),
-        Email: sanitize(body.Email),
-        Eircode: sanitize(body.Eircode),
-    };
-
-    const appData = {
-        ApplianceType: sanitize(body.ApplianceType),
-        Brand: sanitize(body.Brand),
-        ModelNumber: sanitize(body.ModelNumber),
-        PurchaseDate: body.PurchaseDate,
-        WarrantyExpirationDate: body.WarrantyExpirationDate,
-        Cost: body.Cost,
-    };
-
-    const errors = validateUpdate(userData, appData);
-    if (Object.keys(errors).length > 0) {
-        return Response.json({ success: false, errors }, { status: 400 });
-    }
-
-    const conn = await pool.getConnection();
+    let conn;
     try {
+        const { serialNumber } = await params;
+        const body = await request.json();
+
+        const userData = {
+            FirstName: sanitize(body.FirstName),
+            LastName: sanitize(body.LastName),
+            Address: sanitize(body.Address),
+            Mobile: sanitize(body.Mobile),
+            Email: sanitize(body.Email),
+            Eircode: sanitize(body.Eircode),
+        };
+
+        const appData = {
+            ApplianceType: sanitize(body.ApplianceType),
+            Brand: sanitize(body.Brand),
+            ModelNumber: sanitize(body.ModelNumber),
+            PurchaseDate: body.PurchaseDate,
+            WarrantyExpirationDate: body.WarrantyExpirationDate,
+            Cost: body.Cost,
+        };
+
+        const errors = validateUpdate(userData, appData);
+        if (Object.keys(errors).length > 0) {
+            return Response.json({ success: false, errors }, { status: 400 });
+        }
+
+        conn = await pool.getConnection();
+
         // Find the appliance by serial number
         const [rows] = await conn.execute(
             'SELECT ApplianceID, UserID FROM Appliance WHERE SerialNumber = ?',
@@ -127,18 +128,26 @@ export async function PUT(request, { params }) {
 
         return Response.json({ success: true, message: 'Appliance has been updated.' }, { status: 200 });
 
+    } catch (error) {
+        console.error('PUT /api/appliance/[serialNumber] failed:', error);
+        return Response.json(
+            { success: false, message: 'Database connection failed. Please check your MySQL server and DB settings.' },
+            { status: 503 }
+        );
     } finally {
-        conn.release();
+        if (conn) conn.release();
     }
 }
 
 // Delete
 // The "params" parameter needs to be obtained through the second parameter "context".
 export async function DELETE(requset, { params }) {
-    const { serialNumber } = await params;
-
-    const conn = await pool.getConnection();
+    let conn;
     try {
+        const { serialNumber } = await params;
+
+        conn = await pool.getConnection();
+
         const [rows] = await conn.execute(
             'SELECT ApplianceID FROM Appliance WHERE SerialNumber = ?',
             [serialNumber]
@@ -153,7 +162,13 @@ export async function DELETE(requset, { params }) {
 
         return Response.json({ success: true, message: 'Appliance Deleted.' }, { status: 200 });
 
+    } catch (error) {
+        console.error('DELETE /api/appliance/[serialNumber] failed:', error);
+        return Response.json(
+            { success: false, message: 'Database connection failed. Please check your MySQL server and DB settings.' },
+            { status: 503 }
+        );
     } finally {
-        conn.release();
+        if (conn) conn.release();
     }
 }

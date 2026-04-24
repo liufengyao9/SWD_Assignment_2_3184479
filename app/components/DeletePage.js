@@ -98,7 +98,7 @@ export default function DeletePage() {
                             <tr><th>Brand</th><td>{appliance.Brand}</td></tr>
                             <tr><th>Model Number</th><td>{appliance.ModelNumber}</td></tr>
                             <tr><th>Serial Number</th><td>{appliance.SerialNumber}</td></tr>
-                            <tr><th>Cost</th><td>€{parseFloat(appliance.Cost).toFixed(2)}</td></tr>
+                            <tr><th>Cost</th><td>{appliance?.Cost ? `EUR ${parseFloat(appliance.Cost).toFixed(2)}` : 'N/A'}</td></tr>
                         </tbody>
                     </table>
 

@@ -141,7 +141,7 @@ export async function POST(request) {
                  PurchaseDate, WarrantyExpirationDate, Cost)
                  VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
                 [userID, appData.ApplianceType, appData.Brand, appData.ModelNumber,
-                appData.SerialNumber, appData.PurchaseDate, appData.WarrantyExpirationDate, appData.Cost]
+                    appData.SerialNumber, appData.PurchaseDate, appData.WarrantyExpirationDate, appData.Cost]
             );
 
             return Response.json({ success: true, message: 'New appliance added successfully.' }, { status: 201 });
@@ -159,17 +159,19 @@ export async function POST(request) {
 
 // GET
 export async function GET(request) {
-    const { searchParams } = new URL(request.url);
-    const serial = searchParams.get('serial');
-
-    // Validate serial number format before querying
-    const serialRegex = /^\d{12}$/;
-    if (!serial || !serialRegex.test(serial)) {
-        return Response.json({ success: false, message: 'Serial number must be 12 digits.' }, { status: 400 });
-    }
-
-    const conn = await pool.getConnection();
+    let conn;
     try {
+        const { searchParams } = new URL(request.url);
+        const serial = searchParams.get('serial');
+
+        // Validate serial number format before querying
+        const serialRegex = /^\d{12}$/;
+        if (!serial || !serialRegex.test(serial)) {
+            return Response.json({ success: false, message: 'Serial number must be 12 digits.' }, { status: 400 });
+        }
+
+        conn = await pool.getConnection();
+
         // JOIN User and Appliance tables to get full record
         const [rows] = await conn.execute(
             `SELECT u.UserID, u.FirstName, u.LastName, u.Address, u.Mobile, u.Email, u.Eircode,
@@ -188,7 +190,13 @@ export async function GET(request) {
 
         return Response.json({ success: true, data: rows[0] }, { status: 200 });
 
+    } catch (error) {
+        console.error('GET /api/appliance failed:', error);
+        return Response.json(
+            { success: false, message: 'Database connection failed. Please check your MySQL server and DB settings.' },
+            { status: 503 }
+        );
     } finally {
-        conn.release();
+        if (conn) conn.release();
     }
 }
