@@ -163,32 +163,68 @@ export async function GET(request) {
     try {
         const { searchParams } = new URL(request.url);
         const serial = searchParams.get('serial');
+        const applianceType = searchParams.get('applianceType');
+        const brand = searchParams.get('brand');
+        const modelNumber = searchParams.get('modelNumber');
+
+        // Validate that at least one search field is provided.
+        if (!serial && !applianceType && !brand && !modelNumber) {
+            return Response.json(
+                { success: false, message: 'Please enter at least one search criteria.' },
+                { status: 400 }
+            );
+        }
 
         // Validate serial number format before querying
         const serialRegex = /^\d{12}$/;
         if (!serial || !serialRegex.test(serial)) {
-            return Response.json({ success: false, message: 'Serial number must be 12 digits.' }, { status: 400 });
+            if (serial) {
+                return Response.json({ success: false, message: 'Serial number must be 12 digits.' }, { status: 400 });
+            }
         }
 
         conn = await pool.getConnection();
 
-        // JOIN User and Appliance tables to get full record
-        const [rows] = await conn.execute(
-            `SELECT u.UserID, u.FirstName, u.LastName, u.Address, u.Mobile, u.Email, u.Eircode,
-                    a.ApplianceID, a.ApplianceType, a.Brand, a.ModelNumber, a.SerialNumber,
-                    a.PurchaseDate, a.WarrantyExpirationDate, a.Cost
-             FROM Appliance a
-             JOIN User u ON a.UserID = u.UserID
-             WHERE a.SerialNumber = ?`,
-            [serial]
-        );
+        let query = `SELECT u.UserID, u.FirstName, u.LastName, u.Address, u.Mobile, u.Email, u.Eircode,
+                            a.ApplianceID, a.ApplianceType, a.Brand, a.ModelNumber, a.SerialNumber,
+                            a.PurchaseDate, a.WarrantyExpirationDate, a.Cost
+                     FROM Appliance a
+                     JOIN User u ON a.UserID = u.UserID
+                     WHERE 1 = 1`;
+        // Array of filter criteria.
+        const params = [];
+
+        // Serial number is unique, so use exact matching.
+        if (serial) {
+            query += ' AND a.SerialNumber = ?';
+            params.push(serial);
+        }
+
+        // Appliance type comes from a fixed list, so use exact matching.
+        if (applianceType) {
+            query += ' AND a.ApplianceType = ?';
+            params.push(applianceType);
+        }
+
+        // Brand and model number are text searches, so allow partial matches.
+        if (brand) {
+            query += ' AND a.Brand LIKE ?';
+            params.push(`%${brand}%`);
+        }
+
+        if (modelNumber) {
+            query += ' AND a.ModelNumber LIKE ?';
+            params.push(`%${modelNumber}%`);
+        }
+
+        const [rows] = await conn.execute(query, params);
 
         // No match
         if (rows.length === 0) {
             return Response.json({ success: false, message: 'No matching appliance found!' }, { status: 404 });
         }
 
-        return Response.json({ success: true, data: rows[0] }, { status: 200 });
+        return Response.json({ success: true, data: rows }, { status: 200 });
 
     } catch (error) {
         console.error('GET /api/appliance failed:', error);
