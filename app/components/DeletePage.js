@@ -23,7 +23,7 @@ export default function DeletePage() {
         const data = await res.json();
 
         if (data.success) {
-            setAppliance(data.data);
+            setAppliance(data.data[0]);
         } else {
             setSerialError(data.message || 'No matching appliance found!');
         }
