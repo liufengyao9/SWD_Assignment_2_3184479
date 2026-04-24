@@ -73,80 +73,87 @@ function validateAll(u, a) {
 
 // POST
 export async function POST(request) {
-    const body = await request.json();
-
-    // Sanitize user fields
-    const userData = {
-        FirstName: sanitize(body.FirstName),
-        LastName: sanitize(body.LastName),
-        Address: sanitize(body.Address),
-        Mobile: sanitize(body.Mobile),
-        Email: sanitize(body.Email),
-        Eircode: sanitize(body.Eircode),
-    };
-
-    // Sanitize appliance fields
-    const appData = {
-        ApplianceType: sanitize(body.ApplianceType),
-        Brand: sanitize(body.Brand),
-        ModelNumber: sanitize(body.ModelNumber),
-        SerialNumber: sanitize(body.SerialNumber),
-        PurchaseDate: body.PurchaseDate,
-        WarrantyExpirationDate: body.WarrantyExpirationDate,
-        Cost: body.Cost,
-    };
-
-    // Validate all fields
-    const errors = validateAll(userData, appData);
-    if (Object.keys(errors).length > 0) {
-        return Response.json({ success: false, errors }, { status: 400 });
-    }
-
-    const conn = await pool.getConnection();
     try {
-        // Check if serial number already exists
-        const [existing] = await conn.execute(
-            'SELECT ApplianceID FROM Appliance WHERE SerialNumber = ?',
-            [appData.SerialNumber]
-        );
-        if (existing.length > 0) {
-            return Response.json({ success: false, message: 'Appliance already exists.' }, { status: 409 });
+        const body = await request.json();
+
+        // Sanitize user fields
+        const userData = {
+            FirstName: sanitize(body.FirstName),
+            LastName: sanitize(body.LastName),
+            Address: sanitize(body.Address),
+            Mobile: sanitize(body.Mobile),
+            Email: sanitize(body.Email),
+            Eircode: sanitize(body.Eircode),
+        };
+
+        // Sanitize appliance fields
+        const appData = {
+            ApplianceType: sanitize(body.ApplianceType),
+            Brand: sanitize(body.Brand),
+            ModelNumber: sanitize(body.ModelNumber),
+            SerialNumber: sanitize(body.SerialNumber),
+            PurchaseDate: body.PurchaseDate,
+            WarrantyExpirationDate: body.WarrantyExpirationDate,
+            Cost: body.Cost,
+        };
+
+        // Validate all fields
+        const errors = validateAll(userData, appData);
+        if (Object.keys(errors).length > 0) {
+            return Response.json({ success: false, errors }, { status: 400 });
         }
 
-        // Check if user with this email already exists; if not, create them
-        const [users] = await conn.execute(
-            'SELECT UserID FROM User WHERE Email = ?',
-            [userData.Email]
-        );
-
-        let userID;
-        if (users.length > 0) {
-            // If userID already exist, reuse it.
-            userID = users[0].UserID;
-        } else {
-            // Insert new user
-            const [result] = await conn.execute(
-                `INSERT INTO User (FirstName, LastName, Address, Mobile, Email, Eircode)
-                 VALUES (?, ?, ?, ?, ?, ?)`,
-                [userData.FirstName, userData.LastName, userData.Address,
-                userData.Mobile, userData.Email, userData.Eircode]
+        const conn = await pool.getConnection();
+        try {
+            // Check if serial number already exists
+            const [existing] = await conn.execute(
+                'SELECT ApplianceID FROM Appliance WHERE SerialNumber = ?',
+                [appData.SerialNumber]
             );
-            userID = result.insertId;
-        }
+            if (existing.length > 0) {
+                return Response.json({ success: false, message: 'Appliance already exists.' }, { status: 409 });
+            }
 
-        // Insert appliance linked to userID
-        await conn.execute(
-            `INSERT INTO Appliance (UserID, ApplianceType, Brand, ModelNumber, SerialNumber,
-             PurchaseDate, WarrantyExpirationDate, Cost)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-            [userID, appData.ApplianceType, appData.Brand, appData.ModelNumber,
+            // Check if user with this email already exists; if not, create them
+            const [users] = await conn.execute(
+                'SELECT UserID FROM User WHERE Email = ?',
+                [userData.Email]
+            );
+
+            let userID;
+            if (users.length > 0) {
+                // If userID already exist, reuse it.
+                userID = users[0].UserID;
+            } else {
+                // Insert new user
+                const [result] = await conn.execute(
+                    `INSERT INTO User (FirstName, LastName, Address, Mobile, Email, Eircode)
+                     VALUES (?, ?, ?, ?, ?, ?)`,
+                    [userData.FirstName, userData.LastName, userData.Address,
+                    userData.Mobile, userData.Email, userData.Eircode]
+                );
+                userID = result.insertId;
+            }
+
+            // Insert appliance linked to userID
+            await conn.execute(
+                `INSERT INTO Appliance (UserID, ApplianceType, Brand, ModelNumber, SerialNumber,
+                 PurchaseDate, WarrantyExpirationDate, Cost)
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+                [userID, appData.ApplianceType, appData.Brand, appData.ModelNumber,
                 appData.SerialNumber, appData.PurchaseDate, appData.WarrantyExpirationDate, appData.Cost]
+            );
+
+            return Response.json({ success: true, message: 'New appliance added successfully.' }, { status: 201 });
+        } finally {
+            conn.release(); // Release connection back to pool
+        }
+    } catch (error) {
+        console.error('POST /api/appliance failed:', error);
+        return Response.json(
+            { success: false, message: 'Database connection failed. Please check your MySQL server and DB settings.' },
+            { status: 503 }
         );
-
-        return Response.json({ success: true, message: 'New appliance added successfully.' }, { status: 201 });
-
-    } finally {
-        conn.release(); // Release connection back to pool
     }
 }
 

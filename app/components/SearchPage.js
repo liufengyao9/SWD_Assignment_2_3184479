@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import styles from "../part-b-c/style.module.css";
 
 export default function SearchPage() {
 
@@ -28,7 +29,7 @@ export default function SearchPage() {
     };
 
     return (
-        <div>
+        <div className={styles.page}>
             <h1>Search Appliance</h1>
             <p>Enter a serial number to find appliance details</p>
 

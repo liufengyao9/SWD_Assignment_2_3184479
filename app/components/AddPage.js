@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import styles from "../part-b-c/style.module.css";
 
 export default function AddPage() {
 
@@ -72,7 +73,7 @@ export default function AddPage() {
 
 
     return (
-        <div>
+        <div className={styles.page}>
             <h1>Add Appliance</h1>
             <form onSubmit={handleSubmit}>
                 {/* User Details */}

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import styles from "../part-b-c/style.module.css";
 
 // First get the information of the appliance that need to be deleted, then confirm.
 export default function DeletePage() {
@@ -47,7 +48,7 @@ export default function DeletePage() {
     };
 
     return (
-        <div>
+        <div className={styles.page}>
             <h1>Delete Appliance</h1>
             <p>Enter the serial number to find and remove an appliance</p>
 

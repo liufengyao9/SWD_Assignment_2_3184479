@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import styles from "../part-b-c/style.module.css";
 
 const APPLIANCE_TYPES = [
     'Fridge', 'Washing Machine', 'Dryer', 'Dishwasher', 'Oven',
@@ -97,7 +98,7 @@ export default function UpdatePage() {
     }
 
     return (
-        <div>
+        <div className={styles.page}>
             <h1>Update Appliance</h1>
             <p>Enter a serial number to edit a appliance</p>
 

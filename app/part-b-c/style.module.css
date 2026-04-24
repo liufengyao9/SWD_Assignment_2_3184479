@@ -1,0 +1,103 @@
+.page {
+  max-width: 820px;
+  margin: 40px auto;
+  padding: 24px;
+  background: #ffffff;
+  border: 1px solid #dcdcdc;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  font-family: Arial, sans-serif;
+}
+
+.page h1 {
+  margin-bottom: 10px;
+  color: #222;
+}
+
+.page p {
+  margin-bottom: 18px;
+  color: #555;
+}
+
+.page form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.page label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: #333;
+}
+
+.page input,
+.page select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #cfcfcf;
+  border-radius: 6px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.page input:focus,
+.page select:focus {
+  outline: none;
+  border-color: #4a90e2;
+}
+
+.page button {
+  padding: 10px 16px;
+  margin-right: 10px;
+  border: none;
+  border-radius: 6px;
+  background: #2f6fed;
+  color: #fff;
+  cursor: pointer;
+}
+
+.page button:hover {
+  background: #2459bd;
+}
+
+.page a {
+  color: #2f6fed;
+  text-decoration: none;
+  margin-left: 4px;
+}
+
+.page a:hover {
+  text-decoration: underline;
+}
+
+.page span {
+  display: block;
+  margin-top: 6px;
+  color: #c62828;
+  font-size: 13px;
+}
+
+.page strong {
+  display: block;
+  margin-bottom: 12px;
+}
+
+.page table {
+  width: 100%;
+  margin: 10px 0 20px;
+  border-collapse: collapse;
+}
+
+.page th,
+.page td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+.page th {
+  width: 35%;
+  background: #f5f7fa;
+}
